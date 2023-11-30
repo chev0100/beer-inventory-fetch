@@ -10,14 +10,18 @@ const APP = {
 
 	init: () => {
 		API.load;
+		APP.load();
 		APP.fetchBeers();
 		APP.beerList.addEventListener('click', APP.orderBeer);
+	},
+
+	load: () => {
+		console.log('Loaded the App module.');
 	},
 
 	fetchBeers: () => {
 		const size = 5;
 		const url = `https://random-data-api.com/api/v2/beers?size=${size}`;
-
 		fetch(url)
 			.then((response) => {
 				if (!response.ok) throw new Error(response.statusText);
