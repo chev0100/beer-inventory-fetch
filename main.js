@@ -1,12 +1,97 @@
 // Initialize the app.
+function init() {
+	console.log('App initialized.');
+	fetchBeers();
+}
 
+function fetchBeers() {
+	const size = 3;
+	const url = `https://random-data-api.com/api/v2/beers?size=${size}`;
+	console.log('fetching beers');
+	console.log(url);
+
+	fetch(url)
+		.then((response) => {
+			if (!response.ok) throw new Error(response.statusText);
+			return response.json();
+		})
+		.then(function (beers) {
+			console.log(beers);
+			const newBeers = beers.map(function (item) {
+				const newBeer = {
+					id: item.id,
+					name: item.name,
+					style: item.style,
+					alcohol: item.alcohol,
+					price: getRandomPrice(5, 20),
+				};
+				return newBeer;
+			});
+			console.log(newBeers);
+			return newBeers;
+		})
+		.then(function (beers) {
+			displayBeers(beers);
+		});
+}
+
+function displayBeers(beers) {
+	const beerList = document.getElementById('beerList');
+	const df = document.createDocumentFragment();
+	beerList.querySelector('.message').remove();
+	// beerList.remove(message);
+
+	beers.forEach(function (beer) {
+		const li = document.createElement('li');
+		li.classList.add('beer');
+
+		const div = document.createElement('div');
+		div.classList.add('beer__info');
+		li.appendChild(div);
+
+		const beerName = document.createElement('p');
+		beerName.classList.add('beer__name');
+		beerName.textContent = beer.name;
+		div.append(beerName);
+
+		const beerStyle = document.createElement('p');
+		beerStyle.classList.add('beer__style');
+		beerStyle.textContent = beer.style;
+		div.append(beerStyle);
+
+		const beerAlchohol = document.createElement('p');
+		beerAlchohol.classList.add('beer__alchohol');
+		beerAlchohol.textContent = beer.alcohol;
+		div.append(beerAlchohol);
+
+		const beerPrice = document.createElement('p');
+		beerPrice.classList.add('beer__price');
+		beerPrice.textContent = beer.price;
+		li.append(beerPrice);
+
+		const orderBeer = document.createElement('button');
+		orderBeer.id = 'addBeerButton';
+		orderBeer.classList.add('beer__button');
+		orderBeer.textContent = 'Add to order';
+		li.append(orderBeer);
+
+		df.append(li);
+	});
+	beerList.append(df);
+}
+
+function getRandomPrice(min, max) {
+	const cents = Math.random() < 0.5 ? '00' : '50';
+	const price = Math.trunc(Math.random() * (max - min + 1) + min);
+	return `${price}.${cents}`;
+}
+console.log(getRandomPrice(5, 20));
+document.addEventListener('DOMContentLoaded', init);
 // Create an array called beerMenu to store the beer objects.
 
 // Create a function called fetchBeers() to fetch a list of beers from https://random-data-api.com/api/v2/beers
 
-
 // Add an event listener to the beerList <ul> to listen for clicks on the "Add to Order" buttons in the beer list.
-
 
 // Run the fetchBeers() function when the app is initialized.
 
@@ -52,4 +137,3 @@
 // Append the fragment to the orderList.
 
 // Calculate the total price of the order by multiplying the beer price by the number of beers in each order object. Then use the reduce method (totalPrice + orderPrice * tally) to find the total price of the order. Display the total price in the totalPriceDisplay <p> element.
-
