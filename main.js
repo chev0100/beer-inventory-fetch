@@ -1,23 +1,27 @@
+const newBeers = [];
+const orders = [];
 // Initialize the app.
+
 function init() {
 	console.log('App initialized.');
 	fetchBeers();
+	document.getElementById('beerList').addEventListener('click', orderBeer);
 }
 
 function fetchBeers() {
 	const size = 3;
 	const url = `https://random-data-api.com/api/v2/beers?size=${size}`;
 	console.log('fetching beers');
-	console.log(url);
 
 	fetch(url)
 		.then((response) => {
-			if (!response.ok) throw new Error(response.statusText);
+			if (!response.ok) throw new Error('The response was ot good.');
+			console.log(response);
 			return response.json();
 		})
 		.then(function (beers) {
-			console.log(beers);
-			const newBeers = beers.map(function (item) {
+			beers.forEach((item) => {
+				// console.log(item);
 				const newBeer = {
 					id: item.id,
 					name: item.name,
@@ -25,24 +29,39 @@ function fetchBeers() {
 					alcohol: item.alcohol,
 					price: getRandomPrice(5, 20),
 				};
-				return newBeer;
+				console.log(newBeer);
+				newBeers.push(newBeer);
 			});
+			// const newBeers = beers.map(function (item) {
+			// 	const newBeer = {
+			// 		id: item.id,
+			// 		name: item.name,
+			// 		style: item.style,
+			// 		alcohol: item.alcohol,
+			// 		price: getRandomPrice(5, 20),
+			// 	};
+			// 	return newBeer;
+			// });
 			console.log(newBeers);
+			displayBeers(newBeers);
 			return newBeers;
 		})
-		.then(function (beers) {
-			displayBeers(beers);
-		});
+		// .then(function (beers) {
+		// 	displayBeers(beers);
+		// })
+		.catch((error) => console.error('Error:', error));
 }
 
 function displayBeers(beers) {
 	const beerList = document.getElementById('beerList');
+
 	const df = document.createDocumentFragment();
 	beerList.querySelector('.message').remove();
 	// beerList.remove(message);
 
 	beers.forEach(function (beer) {
 		const li = document.createElement('li');
+		li.setAttribute('data-beer', beer.id);
 		li.classList.add('beer');
 
 		const div = document.createElement('div');
@@ -70,7 +89,6 @@ function displayBeers(beers) {
 		li.append(beerPrice);
 
 		const orderBeer = document.createElement('button');
-		orderBeer.id = 'addBeerButton';
 		orderBeer.classList.add('beer__button');
 		orderBeer.textContent = 'Add to order';
 		li.append(orderBeer);
@@ -85,7 +103,60 @@ function getRandomPrice(min, max) {
 	const price = Math.trunc(Math.random() * (max - min + 1) + min);
 	return `${price}.${cents}`;
 }
-console.log(getRandomPrice(5, 20));
+
+// Create a function called orderBeer()
+function orderBeer(ev) {
+	console.log('clicked');
+	// console.log(ev.target);
+
+	console.log(ev.target.matches('.beer__button'));
+
+	if (ev.target.matches('.beer__button')) {
+		console.log('i am button');
+		console.log(ev.target.closest('.beer'));
+		const beerId = +ev.target.closest('.beer').dataset.beer;
+		console.log(beerId);
+
+		const beer = newBeers.find((beer) => beer.id === beerId);
+		console.log(beer);
+		orders.push(beer);
+		displayOrders(orders);
+	}
+}
+
+function displayOrders(orderArr) {
+	console.log(orderArr);
+	const orderList = document.getElementById('orderList');
+	const fragment = document.createDocumentFragment();
+
+	orderArr.forEach((order) => {
+		const li = document.createElement('li');
+		li.classList.add('order');
+		li.dataset.id = order.id;
+
+		const nameParagraph = document.createElement('p');
+		nameParagraph.classList.add('order__name');
+		nameParagraph.textContent = order.name;
+		li.appendChild(nameParagraph);
+
+		const tallyParagraph = document.createElement('p');
+		tallyParagraph.classList.add('order__tally');
+		tallyParagraph.textContent = order.tally;
+		li.appendChild(tallyParagraph);
+
+		const priceParagraph = document.createElement('p');
+		priceParagraph.classList.add('order__price');
+		priceParagraph.textContent = `$${order.price}`;
+		li.appendChild(priceParagraph);
+
+		fragment.appendChild(li);
+	});
+	orderList.innerHTML = '';
+
+	orderList.appendChild(fragment);
+}
+//add a beer to the order array when the user clicks the "Add to Order" button. Only include the id, name, price, and tally to your order object. Use ev.target and the .matches() method to check if the clicked element is the "Add to Order" button. Use the .closest() method to get the beer id from the clicked beer.
+
 document.addEventListener('DOMContentLoaded', init);
 // Create an array called beerMenu to store the beer objects.
 
