@@ -1,14 +1,17 @@
 # Beer Store Order App
 
 ## Description
+
 This app loads content from the beers endpoint of the Random Data API to build a Beer Menu Ordering interface. The user can add beers to their order, tallying how many of each kind they order and summing up the total price of their bill.
 
 This exercise was coded and designed for students in the first semester of the Mobile Applications Design and Development program at Algonquin College.
 
 ## Branches
-There is a branch called `w24-complete` that contains the completed exercise. Clone the app and switch to that branch to see the solution or switch to the starter branch to complete the exercise yourself.
+
+There is a branch called `w24-complete` that contains the completed exercise. You can track progress of the code-along from the `in-progress` branch. Clone the app and switch to those branches to see the work in progress or the solution, or switch to the starter branch to complete the exercise yourself.
 
 ## Attribution
+
 MIT License
 
 Copyright (c) 2024 Vincent Chevalier
